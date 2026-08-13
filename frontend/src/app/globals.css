@@ -1,26 +1,154 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Theme tokens.
+ *
+ * The design follows the shadcn/ui zinc palette. Light/dark mode is driven by
+ * the `dark` class on <html>; the accent ("Color Mode" in the workspace menu)
+ * is driven by a `data-accent` attribute and only re-points the primary /
+ * ring tokens, so every accent works in both light and dark mode.
+ */
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #09090b;
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #dc2626;
+  --destructive-foreground: #fafafa;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #18181b;
+  --sidebar: #fafafa;
+  --sidebar-foreground: #09090b;
+  --sidebar-border: #e4e4e7;
+  --radius: 0.625rem;
+
+  /* Fixed semantic colors (same in all themes) */
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --overdue: #dc2626;
+  --overdue-bg: #fef2f2;
+  --priority-urgent: #dc2626;
+  --priority-high: #ef4444;
+  --priority-medium: #f59e0b;
+  --priority-low: #a1a1aa;
+  --status-backlog: #f97316;
+  --status-todo: #71717a;
+  --status-doing: #3b82f6;
+  --status-completed: #16a34a;
+  --status-on-hold: #8b5cf6;
 }
+
+.dark {
+  --background: #09090b;
+  --foreground: #fafafa;
+  --card: #18181b;
+  --card-foreground: #fafafa;
+  --popover: #18181b;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #18181b;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #d4d4d8;
+  --sidebar: #111113;
+  --sidebar-foreground: #fafafa;
+  --sidebar-border: #27272a;
+  --overdue: #f87171;
+  --overdue-bg: rgba(239, 68, 68, 0.12);
+  --priority-low: #71717a;
+}
+
+/* Accent palettes ("Color Mode" menu). "black" is the default above. */
+[data-accent="amber"] { --primary: #d97706; --primary-foreground: #ffffff; --ring: #d97706; }
+[data-accent="blue"] { --primary: #7c3aed; --primary-foreground: #ffffff; --ring: #7c3aed; }
+[data-accent="pink"] { --primary: #db2777; --primary-foreground: #ffffff; --ring: #db2777; }
+[data-accent="rose"] { --primary: #e11d48; --primary-foreground: #ffffff; --ring: #e11d48; }
+[data-accent="emerald"] { --primary: #059669; --primary-foreground: #ffffff; --ring: #059669; }
+
+.dark[data-accent="amber"] { --primary: #f59e0b; --primary-foreground: #451a03; --ring: #f59e0b; }
+.dark[data-accent="blue"] { --primary: #8b5cf6; --primary-foreground: #ffffff; --ring: #8b5cf6; }
+.dark[data-accent="pink"] { --primary: #ec4899; --primary-foreground: #ffffff; --ring: #ec4899; }
+.dark[data-accent="rose"] { --primary: #f43f5e; --primary-foreground: #ffffff; --ring: #f43f5e; }
+.dark[data-accent="emerald"] { --primary: #10b981; --primary-foreground: #022c22; --ring: #10b981; }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-overdue: var(--overdue);
+  --color-overdue-bg: var(--overdue-bg);
+  --color-priority-urgent: var(--priority-urgent);
+  --color-priority-high: var(--priority-high);
+  --color-priority-medium: var(--priority-medium);
+  --color-priority-low: var(--priority-low);
+  --color-status-backlog: var(--status-backlog);
+  --color-status-todo: var(--status-todo);
+  --color-status-doing: var(--status-doing);
+  --color-status-completed: var(--status-completed);
+  --color-status-on-hold: var(--status-on-hold);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--color-border);
+    outline-color: color-mix(in oklab, var(--color-ring) 50%, transparent);
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
 }
