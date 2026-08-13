@@ -112,7 +112,9 @@ export interface CreateProjectInput {
   leadId?: string;
 }
 
-export type UpdateProjectInput = Partial<CreateProjectInput> & {
+export type UpdateProjectInput = Partial<
+  Omit<CreateProjectInput, "dueDate" | "leadId">
+> & {
   dueDate?: string | null;
   leadId?: string | null;
 };
