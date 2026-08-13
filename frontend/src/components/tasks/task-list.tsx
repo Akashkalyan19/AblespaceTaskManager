@@ -6,7 +6,6 @@ import { ChevronDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatLongDate } from "@/lib/format";
 import { UserAvatar } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { PriorityBadge } from "./priority";
 import { StatusBadge } from "./status-badge";
 import { DateChip, LabelChip } from "./chips";
