@@ -126,11 +126,11 @@ export function ProjectsTable({
               onClick={() => router.push(`/projects/${project.id}`)}
               className="cursor-pointer border-t transition-colors hover:bg-accent/40"
             >
-              <td className="px-4 py-3.5 font-normal">{project.name}</td>
-              <td className="px-2 py-3.5">
+              <td className="px-4 h-12 py-0 font-normal">{project.name}</td>
+              <td className="px-2 h-12 py-0">
                 <PriorityBadge priority={project.priority} />
               </td>
-              <td className="px-2 py-3.5" onClick={(event) => event.stopPropagation()}>
+              <td className="px-2 h-12 py-0" onClick={(event) => event.stopPropagation()}>
                 <MemberPicker
                   value={project.leadId}
                   onChange={(leadId) =>
@@ -152,10 +152,10 @@ export function ProjectsTable({
                   </button>
                 </MemberPicker>
               </td>
-              <td className="px-2 py-3.5">
+              <td className="px-2 h-12 py-0">
                 {project.dueDate ? formatLongDate(project.dueDate) : ""}
               </td>
-              <td className="px-4 py-3.5 text-right" onClick={(event) => event.stopPropagation()}>
+              <td className="px-4 h-12 py-0 text-right" onClick={(event) => event.stopPropagation()}>
                 <ProjectActionsMenu project={project} />
               </td>
             </tr>

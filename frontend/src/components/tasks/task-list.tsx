@@ -238,16 +238,16 @@ function TaskRow({ task, fields }: { task: Task; fields: VisibleFields }) {
       onClick={() => router.push(`/tasks/${task.id}`)}
       className="group cursor-pointer border-t transition-colors hover:bg-accent/40"
     >
-      <td className="px-4 py-3.5 font-normal">{task.title}</td>
+      <td className="px-4 h-12 py-0 font-normal">{task.title}</td>
 
       {fields.priority && (
-        <td className="px-2 py-3.5">
+        <td className="px-2 h-12 py-0">
           <PriorityBadge priority={task.priority} />
         </td>
       )}
 
       {fields.members && (
-        <td className="px-2 py-3.5" onClick={(event) => event.stopPropagation()}>
+        <td className="px-2 h-12 py-0" onClick={(event) => event.stopPropagation()}>
           <MemberPicker
             value={task.assigneeId}
             onChange={(assigneeId) =>
@@ -274,13 +274,13 @@ function TaskRow({ task, fields }: { task: Task; fields: VisibleFields }) {
       )}
 
       {fields.dueDate && (
-        <td className="px-2 py-3.5">
+        <td className="px-2 h-12 py-0">
           {task.dueDate ? formatLongDate(task.dueDate) : ""}
         </td>
       )}
 
       {fields.labels && (
-        <td className="px-2 py-3.5">
+        <td className="px-2 h-12 py-0">
           <span className="flex flex-wrap gap-1">
             {task.labels.map((label, index) => (
               <LabelChip key={`${label}-${index}`} label={label} />
@@ -290,18 +290,18 @@ function TaskRow({ task, fields }: { task: Task; fields: VisibleFields }) {
       )}
 
       {fields.status && (
-        <td className="px-2 py-3.5">
+        <td className="px-2 h-12 py-0">
           <StatusBadge status={task.status} colored={false} />
         </td>
       )}
 
       {fields.reporter && (
-        <td className="px-2 py-3.5">
+        <td className="px-2 h-12 py-0">
           {me ? <UserAvatar user={me} size={24} /> : null}
         </td>
       )}
 
-      <td className="px-4 py-3.5 text-right" onClick={(event) => event.stopPropagation()}>
+      <td className="px-4 h-12 py-0 text-right" onClick={(event) => event.stopPropagation()}>
         <RowActionsMenu task={task} />
       </td>
     </tr>

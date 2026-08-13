@@ -42,10 +42,16 @@
   --warning: #f59e0b;
   --overdue: #dc2626;
   --overdue-bg: #fef2f2;
-  --priority-urgent: #dc2626;
-  --priority-high: #ef4444;
-  --priority-medium: #f59e0b;
-  --priority-low: #a1a1aa;
+  /*
+   * Priority colors keep the design's hue order (urgent red -> high red ->
+   * medium orange -> low grey) but are darkened from the mock so that every
+   * label clears WCAG AA (4.5:1) on the white background. The mock's lighter
+   * tints measured 2.1-3.8:1.
+   */
+  --priority-urgent: #b91c1c;
+  --priority-high: #dc2626;
+  --priority-medium: #c2410c;
+  --priority-low: #71717a;
   --status-backlog: #f97316;
   --status-todo: #71717a;
   --status-doing: #3b82f6;
@@ -78,7 +84,15 @@
   --sidebar-border: #27272a;
   --overdue: #f87171;
   --overdue-bg: rgba(239, 68, 68, 0.12);
-  --priority-low: #71717a;
+  /* Lighter tints for the dark background, again all above 4.5:1. */
+  --priority-urgent: #f87171;
+  --priority-high: #ef4444;
+  --priority-medium: #fbbf24;
+  --priority-low: #a1a1aa;
+  --status-backlog: #fb923c;
+  --status-doing: #60a5fa;
+  --status-completed: #4ade80;
+  --status-on-hold: #a78bfa;
 }
 
 /* Accent palettes ("Color Mode" menu). "black" is the default above. */

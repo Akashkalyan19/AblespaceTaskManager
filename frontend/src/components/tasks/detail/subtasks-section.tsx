@@ -105,11 +105,11 @@ export function SubtasksSection({ task }: { task: Task }) {
               )}
               {subtasks.map((subtask) => (
                 <tr key={subtask.id} className="border-t">
-                  <td className="px-4 py-3.5">{subtask.title}</td>
-                  <td className="px-2 py-3.5">
+                  <td className="px-4 h-12 py-0">{subtask.title}</td>
+                  <td className="px-2 h-12 py-0">
                     <PriorityBadge priority={subtask.priority} />
                   </td>
-                  <td className="px-2 py-3.5">
+                  <td className="px-2 h-12 py-0">
                     <MemberPicker
                       value={subtask.assigneeId}
                       onChange={(assigneeId) =>
@@ -135,10 +135,10 @@ export function SubtasksSection({ task }: { task: Task }) {
                       </button>
                     </MemberPicker>
                   </td>
-                  <td className="px-2 py-3.5">
+                  <td className="px-2 h-12 py-0">
                     {subtask.dueDate ? formatLongDate(subtask.dueDate) : ""}
                   </td>
-                  <td className="px-4 py-3.5 text-right">
+                  <td className="px-4 h-12 py-0 text-right">
                     <RowActionsMenu task={subtask} />
                   </td>
                 </tr>
