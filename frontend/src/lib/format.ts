@@ -1,18 +1,19 @@
 /** Date helpers for the "29 Jul" chips and "12 Sep 2026" table cells. */
 
+// Explicit month names — toLocaleDateString("en-GB") renders "Sept",
+// but the design uses three-letter months.
+const MONTHS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+] as const;
+
 export function formatShortDate(isoDate: string): string {
-  return new Date(isoDate + "T00:00:00").toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-  });
+  const date = new Date(isoDate + "T00:00:00");
+  return `${String(date.getDate()).padStart(2, "0")} ${MONTHS[date.getMonth()]}`;
 }
 
 export function formatLongDate(isoDate: string): string {
-  return new Date(isoDate + "T00:00:00").toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
+  return `${formatShortDate(isoDate)} ${new Date(isoDate + "T00:00:00").getFullYear()}`;
 }
 
 export function isOverdue(isoDate: string): boolean {

@@ -141,10 +141,12 @@ export class TasksService {
   }
 }
 
+const MONTHS = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
 function formatDate(isoDate: string): string {
-  return new Date(isoDate + 'T00:00:00').toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
+  const date = new Date(isoDate + 'T00:00:00');
+  return `${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
 }
