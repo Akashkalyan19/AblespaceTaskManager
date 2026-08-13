@@ -54,7 +54,54 @@ export function ProjectsTable({
   const updateProject = useUpdateProject();
 
   return (
-    <div className="overflow-x-auto rounded-lg border">
+    <>
+      {/* Mobile: stacked cards instead of a horizontally scrolling table. */}
+      <div className="flex flex-col gap-2 sm:hidden">
+        {projects.length === 0 ? (
+          <p className="rounded-lg border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">
+            No projects yet.
+          </p>
+        ) : (
+          projects.map((project) => (
+            <article
+              key={project.id}
+              onClick={() => router.push(`/projects/${project.id}`)}
+              className="cursor-pointer rounded-lg border bg-card p-3 transition-colors hover:bg-accent/40"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <h3 className="text-sm font-medium leading-snug">{project.name}</h3>
+                <span onClick={(event) => event.stopPropagation()} className="-mr-1.5 -mt-1">
+                  <ProjectActionsMenu project={project} />
+                </span>
+              </div>
+              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                <PriorityBadge priority={project.priority} />
+                {project.lead ? (
+                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <UserAvatar user={project.lead} size={18} />
+                    {project.lead.name}
+                  </span>
+                ) : null}
+                {project.dueDate ? (
+                  <span className="text-xs text-muted-foreground">
+                    {formatLongDate(project.dueDate)}
+                  </span>
+                ) : null}
+              </div>
+            </article>
+          ))
+        )}
+        <button
+          type="button"
+          onClick={onAdd}
+          className="flex h-11 items-center gap-1.5 rounded-lg border border-dashed px-4 text-sm transition-colors hover:bg-accent/50"
+        >
+          <Plus className="size-4" aria-hidden />
+          Add Projects
+        </button>
+      </div>
+
+      <div className="hidden overflow-x-auto rounded-lg border sm:block">
       <table className="w-full min-w-[560px] border-collapse text-sm">
         <thead>
           <tr className="bg-muted/50 text-left">
@@ -127,7 +174,8 @@ export function ProjectsTable({
           </tr>
         </tbody>
       </table>
-    </div>
+      </div>
+    </>
   );
 }
 

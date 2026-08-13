@@ -9,7 +9,7 @@ import { UserAvatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { PriorityBadge } from "./priority";
 import { StatusBadge } from "./status-badge";
-import { LabelChip } from "./chips";
+import { DateChip, LabelChip } from "./chips";
 import { RowActionsMenu } from "./row-actions-menu";
 import { AddTaskDialog } from "./add-task-dialog";
 import { MemberPicker } from "./pickers";
@@ -91,24 +91,50 @@ function TaskGroup({
 
   return (
     <section aria-label={STATUS_LABELS[status]}>
-      <button
-        type="button"
-        onClick={() => setCollapsed((value) => !value)}
-        aria-expanded={!collapsed}
-        className="mb-3 flex items-center gap-1.5 text-sm font-medium"
-      >
-        <ChevronDown
-          className={cn(
-            "size-4 text-muted-foreground transition-transform",
-            collapsed && "-rotate-90",
+      <h2 className="mb-3">
+        <button
+          type="button"
+          onClick={() => setCollapsed((value) => !value)}
+          aria-expanded={!collapsed}
+          className="flex items-center gap-1.5 text-sm font-medium"
+        >
+          <ChevronDown
+            className={cn(
+              "size-4 text-muted-foreground transition-transform",
+              collapsed && "-rotate-90",
+            )}
+            aria-hidden
+          />
+          {STATUS_LABELS[status]}
+        </button>
+      </h2>
+
+      {/* Mobile: stacked cards. The desktop table would need horizontal
+          scrolling to stay readable at 375px. */}
+      {!collapsed && (
+        <div className="flex flex-col gap-2 sm:hidden">
+          {tasks.length === 0 ? (
+            <p className="rounded-lg border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">
+              No tasks in {STATUS_LABELS[status]}.
+            </p>
+          ) : (
+            tasks.map((task) => (
+              <TaskCardRow key={task.id} task={task} fields={fields} />
+            ))
           )}
-          aria-hidden
-        />
-        {STATUS_LABELS[status]}
-      </button>
+          <button
+            type="button"
+            onClick={() => setAddOpen(true)}
+            className="flex h-11 items-center gap-1.5 rounded-lg border border-dashed px-4 text-sm transition-colors hover:bg-accent/50"
+          >
+            <Plus className="size-4" aria-hidden />
+            Add Task
+          </button>
+        </div>
+      )}
 
       {!collapsed && (
-        <div className="overflow-x-auto rounded-lg border">
+        <div className="hidden overflow-x-auto rounded-lg border sm:block">
           <table className="w-full min-w-[560px] border-collapse text-sm">
             <thead>
               <tr className="bg-muted/50 text-left">
@@ -161,6 +187,45 @@ function TaskGroup({
         projectId={projectId}
       />
     </section>
+  );
+}
+
+/** Mobile presentation of a task row: title, priority, assignee, due date. */
+function TaskCardRow({ task, fields }: { task: Task; fields: VisibleFields }) {
+  const router = useRouter();
+
+  return (
+    <article
+      onClick={() => router.push(`/tasks/${task.id}`)}
+      className="cursor-pointer rounded-lg border bg-card p-3 transition-colors hover:bg-accent/40"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <h3 className="text-sm font-medium leading-snug">{task.title}</h3>
+        <span onClick={(event) => event.stopPropagation()} className="-mr-1.5 -mt-1">
+          <RowActionsMenu task={task} />
+        </span>
+      </div>
+
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        {fields.priority && <PriorityBadge priority={task.priority} />}
+        {fields.status && <StatusBadge status={task.status} />}
+        {fields.members && task.assignee ? (
+          <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <UserAvatar user={task.assignee} size={18} />
+            {task.assignee.name}
+          </span>
+        ) : null}
+        {fields.dueDate && task.dueDate ? <DateChip date={task.dueDate} /> : null}
+      </div>
+
+      {fields.labels && task.labels.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {task.labels.map((label, index) => (
+            <LabelChip key={`${label}-${index}`} label={label} />
+          ))}
+        </div>
+      )}
+    </article>
   );
 }
 

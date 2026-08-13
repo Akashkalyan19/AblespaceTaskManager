@@ -61,7 +61,9 @@ function SidebarNav() {
 }
 
 /**
- * Desktop: inline collapsible sidebar. Mobile (< md): slide-in sheet.
+ * Desktop (lg and up): inline collapsible sidebar.
+ * Mobile and tablet: slide-in sheet, so narrow screens keep the full width
+ * for content instead of losing 256px to navigation.
  */
 export function AppSidebar() {
   const { open, mobileOpen, setMobileOpen } = useSidebar();
@@ -70,7 +72,7 @@ export function AppSidebar() {
     <>
       <aside
         className={cn(
-          "hidden shrink-0 overflow-hidden border-r bg-sidebar text-sidebar-foreground transition-[width] duration-200 md:block",
+          "hidden shrink-0 overflow-hidden border-r bg-sidebar text-sidebar-foreground transition-[width] duration-200 lg:block",
           open ? "w-64" : "w-0 border-r-0",
         )}
       >
@@ -80,7 +82,7 @@ export function AppSidebar() {
       </aside>
 
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="md:hidden" aria-describedby={undefined}>
+        <SheetContent side="left" className="lg:hidden" aria-describedby={undefined}>
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <SidebarNav />
         </SheetContent>

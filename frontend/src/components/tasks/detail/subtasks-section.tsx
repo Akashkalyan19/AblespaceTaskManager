@@ -21,24 +21,70 @@ export function SubtasksSection({ task }: { task: Task }) {
 
   return (
     <section className="mt-8" aria-label="Subtasks">
-      <button
-        type="button"
-        onClick={() => setCollapsed((value) => !value)}
-        aria-expanded={!collapsed}
-        className="mb-3 flex items-center gap-1.5 text-sm font-semibold"
-      >
-        <ChevronDown
-          className={cn(
-            "size-4 text-muted-foreground transition-transform",
-            collapsed && "-rotate-90",
+      <h2 className="mb-3">
+        <button
+          type="button"
+          onClick={() => setCollapsed((value) => !value)}
+          aria-expanded={!collapsed}
+          className="flex items-center gap-1.5 text-sm font-semibold"
+        >
+          <ChevronDown
+            className={cn(
+              "size-4 text-muted-foreground transition-transform",
+              collapsed && "-rotate-90",
+            )}
+            aria-hidden
+          />
+          Subtasks
+        </button>
+      </h2>
+
+      {/* Mobile: stacked cards instead of a horizontally scrolling table. */}
+      {!collapsed && (
+        <div className="flex flex-col gap-2 sm:hidden">
+          {subtasks.length === 0 ? (
+            <p className="rounded-lg border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">
+              No subtasks yet.
+            </p>
+          ) : (
+            subtasks.map((subtask) => (
+              <article key={subtask.id} className="rounded-lg border bg-card p-3">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="text-sm font-medium">{subtask.title}</h3>
+                  <span className="-mr-1.5 -mt-1">
+                    <RowActionsMenu task={subtask} />
+                  </span>
+                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                  <PriorityBadge priority={subtask.priority} />
+                  {subtask.assignee ? (
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <UserAvatar user={subtask.assignee} size={18} />
+                      {subtask.assignee.name}
+                    </span>
+                  ) : null}
+                  {subtask.dueDate ? (
+                    <span className="text-xs text-muted-foreground">
+                      {formatLongDate(subtask.dueDate)}
+                    </span>
+                  ) : null}
+                </div>
+              </article>
+            ))
           )}
-          aria-hidden
-        />
-        Subtasks
-      </button>
+          <button
+            type="button"
+            onClick={() => setAddOpen(true)}
+            className="flex h-11 items-center gap-1.5 rounded-lg border border-dashed px-4 text-sm transition-colors hover:bg-accent/50"
+          >
+            <Plus className="size-4" aria-hidden />
+            Add Subtasks
+          </button>
+        </div>
+      )}
 
       {!collapsed && (
-        <div className="overflow-x-auto rounded-lg border">
+        <div className="hidden overflow-x-auto rounded-lg border sm:block">
           <table className="w-full min-w-[560px] border-collapse text-sm">
             <thead>
               <tr className="bg-muted/50 text-left">

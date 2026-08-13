@@ -26,7 +26,7 @@ export function AppHeader() {
         variant="ghost"
         size="icon-sm"
         aria-label="Toggle sidebar"
-        className="hidden text-foreground md:inline-flex"
+        className="hidden text-foreground lg:inline-flex"
         onClick={() => setOpen(!open)}
       >
         <PanelLeft aria-hidden />
@@ -35,7 +35,7 @@ export function AppHeader() {
         variant="ghost"
         size="icon-sm"
         aria-label="Open menu"
-        className="text-foreground md:hidden"
+        className="text-foreground lg:hidden"
         onClick={() => setMobileOpen(true)}
       >
         <PanelLeft aria-hidden />
