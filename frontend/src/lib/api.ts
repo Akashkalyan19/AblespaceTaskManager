@@ -3,6 +3,14 @@ import { getToken, clearToken } from "./auth";
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api";
 
+/**
+ * True when the API is a remote deployment rather than a local dev server.
+ * The hosted API runs on Render's free tier, which suspends after a period of
+ * inactivity and takes up to a minute to wake, so the UI warns about the first
+ * request only when it is actually talking to that deployment.
+ */
+export const IS_REMOTE_API = !/^https?:\/\/(localhost|127\.0\.0\.1)/.test(BASE_URL);
+
 export class ApiError extends Error {
   constructor(
     public readonly status: number,

@@ -3,16 +3,21 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BrandLogo } from "@/components/brand";
 import { useGuestLogin } from "@/lib/queries";
 import { isLoggedIn, setToken } from "@/lib/auth";
+import { IS_REMOTE_API } from "@/lib/api";
 import { GoogleIcon } from "@/components/google-icon";
 
 export default function LoginPage() {
   const router = useRouter();
   const guestLogin = useGuestLogin();
   const [redirecting, setRedirecting] = useState(false);
+  // Set once the request has been running long enough that the user deserves
+  // an explanation (see the cold-start note below).
+  const [slowRequest, setSlowRequest] = useState(false);
 
   // Already logged in? Straight to the app.
   useEffect(() => {
@@ -22,6 +27,9 @@ export default function LoginPage() {
   }, [router]);
 
   function handleGuestLogin() {
+    setSlowRequest(false);
+    const slowTimer = setTimeout(() => setSlowRequest(true), 3000);
+
     guestLogin.mutate(undefined, {
       onSuccess: ({ accessToken }) => {
         setToken(accessToken);
@@ -29,6 +37,7 @@ export default function LoginPage() {
         router.replace("/tasks");
       },
       onError: (error) => toast.error(error.message),
+      onSettled: () => clearTimeout(slowTimer),
     });
   }
 
@@ -65,6 +74,31 @@ export default function LoginPage() {
               Login with Google
             </Button>
           </div>
+
+          {/*
+            The hosted API runs on Render's free tier, which suspends when idle.
+            Rather than hide that behind a spinner, say so: a heads-up before the
+            click, and a clearer message once the request is visibly slow.
+          */}
+          {IS_REMOTE_API && (
+            <p
+              className="text-center text-xs text-muted-foreground"
+              role={slowRequest ? "status" : undefined}
+              aria-live={slowRequest ? "polite" : undefined}
+            >
+              {slowRequest ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <Loader2 className="size-3 animate-spin" aria-hidden />
+                  Still waking the server up — this can take up to a minute.
+                </span>
+              ) : (
+                <>
+                  Heads up: the API is hosted on Render&apos;s free tier and sleeps
+                  when idle, so the first sign-in can take up to a minute.
+                </>
+              )}
+            </p>
+          )}
         </div>
       </div>
 

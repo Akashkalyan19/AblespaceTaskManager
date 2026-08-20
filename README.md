@@ -392,7 +392,15 @@ npm ci && npm run build && npm start
 ```
 
 Environment variable: `NEXT_PUBLIC_API_URL` — the deployed API URL including
-`/api`.
+`/api`. Next.js inlines `NEXT_PUBLIC_*` values at build time, so set this in the host's
+environment **before** the first build; changing it later requires a redeploy.
+
+**Cold starts.** The API is deployed on Render's free tier, which suspends the service
+after a period of inactivity and takes up to a minute to wake. Rather than hide that
+behind a spinner, the login screen says so up front, switches to "Still waking the server
+up…" once a request has been running for three seconds, and retries the sign-in twice with
+backoff so a gateway error during wake-up does not dead-end the user. The notice only
+renders when the frontend is pointed at a remote API, so local development is unaffected.
 
 Deployment configuration is documented here but has **not** been executed; the
 project has only been run and verified locally.

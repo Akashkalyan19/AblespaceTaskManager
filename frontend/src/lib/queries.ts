@@ -69,6 +69,10 @@ export function useGuestLogin() {
   return useMutation({
     mutationFn: (name?: string) =>
       api<AuthResponse>("/auth/guest", { method: "POST", body: { name } }),
+    // The hosted API sleeps when idle and can return a gateway error while it
+    // wakes, so give the first sign-in a couple of retries instead of failing.
+    retry: 2,
+    retryDelay: (attempt) => Math.min(3000 * 2 ** attempt, 12000),
   });
 }
 
