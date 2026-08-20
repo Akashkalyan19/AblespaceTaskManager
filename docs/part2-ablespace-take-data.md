@@ -10,6 +10,8 @@ modal in the session, then followed the data back out to the Data page to confir
 it lands. Everything below is what I actually observed, not what I assume a
 data-collection tool does.
 
+All screenshots are from that session, cropped to the application area.
+
 ---
 
 ## 1. What this screen is for
@@ -55,7 +57,7 @@ data capture hangs off each person.
 
 Take Data navigates to `/session/:sessionId`. That URL matters: a session is a real,
 addressable object, not a modal. The header shows a **date and time range**
-(`08/20/2026, 10:31 AM – 11:01 AM`) that is editable, so a session has a duration — which
+(`08/20/2026, 11:42 AM – 12:12 PM` in the screenshot) that is editable, so a session has a duration — which
 is what service-time and billing later depend on.
 
 The workspace has three regions:
@@ -213,6 +215,9 @@ fraction beneath each (`2/3`). The Stats panel already uses the phrase "Independ
 Accuracy", so this would also make the app internally consistent.
 
 **2. Prompt-level codes collide — high impact**
+
+![Prompt levels](./images/11-prompt-levels.png)
+
 The dropdown offers **V**erbal and **V**isual, and **P**rompt and **P**hysical. The history
 strip records a single letter, so `V` is ambiguous on review — and that strip is the
 clinician's audit trail of what actually happened.

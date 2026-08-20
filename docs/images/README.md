@@ -1,7 +1,7 @@
 # Screenshots for the Part 2 write-up
 
-Drop the images here using these exact filenames. Each one is referenced from
-`../part2-ablespace-take-data.md`.
+Captured 20 Aug 2026 from a live AbleSpace session, cropped to the application area
+(browser chrome removed). Referenced from `../part2-ablespace-take-data.md`.
 
 | File | What to capture |
 |---|---|
@@ -16,6 +16,4 @@ Drop the images here using these exact filenames. Each one is referenced from
 | `09-customize-view.png` | Customize View panel: List / Board / Group, Compact View, Show/Hide toggles |
 | `10-data-page.png` | Sidebar > Data, showing the session you just captured |
 
-Optional extras worth having: the prompt-level dropdown (showing the duplicate V and P
-codes), and the Stats tab (showing Accuracy as "-" on older rows next to the blurred
-Performance Summary) - both are cited as evidence in the write-up.
+| `11-prompt-levels.png` | Prompt dropdown showing the duplicate V (Verbal/Visual) and P (Prompt/Physical) codes |
