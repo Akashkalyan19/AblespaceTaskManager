@@ -199,6 +199,11 @@ Open <http://localhost:3000> and click **Continue as Guest**.
 All routes are prefixed with `/api`. Every route except guest login requires
 `Authorization: Bearer <token>`.
 
+### Health
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/health` | Unauthenticated liveness check; reports process and database status |
+
 ### Auth
 | Method | Path | Description |
 |---|---|---|
