@@ -5,6 +5,26 @@ assessment. It implements the provided [Figma design](https://www.figma.com/desi
 as a working product: guest login, tasks in list and board views, projects,
 task detail with subtasks/comments/activity, and a persistent theme system.
 
+### Live demo
+
+| | |
+|---|---|
+| **App** | https://ablespace-task-manager-gamma.vercel.app |
+| **API** | https://ablespacetaskmanager.onrender.com/api |
+| **API health** | https://ablespacetaskmanager.onrender.com/api/health |
+
+Click **Continue as Guest** — no sign-up, and you get your own populated workspace.
+
+> The API runs on Render's free tier, which suspends the service when idle. If it has
+> been quiet for a while the first sign-in can take up to a minute while the service
+> wakes; the login screen says so, and retries automatically. Everything is instant
+> afterwards.
+
+### Part 2 — Product understanding
+
+The AbleSpace "Take Data" walkthrough is at
+[`docs/part2-ablespace-take-data.md`](docs/part2-ablespace-take-data.md).
+
 ---
 
 ## Project overview
@@ -407,8 +427,12 @@ up…" once a request has been running for three seconds, and retries the sign-i
 backoff so a gateway error during wake-up does not dead-end the user. The notice only
 renders when the frontend is pointed at a remote API, so local development is unaffected.
 
-Deployment configuration is documented here but has **not** been executed; the
-project has only been run and verified locally.
+**This deployment is live** at the URLs above: Neon Postgres (migrated and seeded),
+the API on Render's free tier, and the frontend on Vercel. Verified against production:
+`/api/health` reports the database reachable, guest login provisions a 21-task sandbox,
+create/update/delete round-trip with the activity log, unauthenticated and malformed
+requests return 401 and 400, and `CORS_ORIGIN` is restricted to the Vercel origin — a
+request from any other origin is blocked by the browser.
 
 ---
 
