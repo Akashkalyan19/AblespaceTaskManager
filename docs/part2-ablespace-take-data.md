@@ -211,9 +211,13 @@ as *correct ÷ attempts*. But the label "Prompted" reads as "the percentage of t
 were prompted", which is a different and equally plausible number. Worse, in my session
 both boxes read **66.7%**, so the distinction was invisible at exactly the moment I needed
 to understand it.
-*Fix:* rename to **Independent accuracy** and **Accuracy with prompts**, and show the
-fraction beneath each (`2/3`). The Stats panel already uses the phrase "Independent
-Accuracy", so this would also make the app internally consistent.
+*Fix:* rename to **Independent accuracy** and **Accuracy with prompts** — the Stats panel
+already uses "Independent Accuracy", so this also makes the app internally consistent.
+A fraction under each would not be enough on its own: in my session both resolve to `2/3`,
+because a prompted trial increments Prompts without producing a correct attempt, so the
+two numbers only diverge once a prompted *success* is recorded. The figure that actually
+carries the signal is the prompt count, so surface it alongside them —
+`2/3 independent · 1 prompted` — rather than two percentages that are frequently identical.
 
 **2. Prompt-level codes collide — high impact**
 
