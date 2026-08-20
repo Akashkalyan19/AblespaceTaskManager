@@ -185,7 +185,8 @@ Open <http://localhost:3000> and click **Continue as Guest**.
 |---|---|---|
 | `npm run start:dev` | backend | API with watch mode |
 | `npm run build` | backend/frontend | production build |
-| `npm run migration:run` / `migration:revert` | backend | apply / roll back migrations |
+| `npm run migration:run` / `migration:revert` | backend | apply / roll back migrations (dev, via ts-node) |
+| `npm run migration:run:prod` | backend | apply migrations from the compiled build (used in deployment) |
 | `npm run seed` | backend | insert demo member accounts |
 | `npm run test:e2e` | backend | API test suite |
 | `npm run dev` | frontend | Next.js dev server |
@@ -362,14 +363,23 @@ are clean, with no suppressed errors and no `any` in application code.
 
 The two apps deploy independently.
 
-**Database** — any managed Postgres (Neon, Supabase, Railway, RDS). Run
-`npm run migration:run` and `npm run seed` once against it.
+**Database** — any managed Postgres (Neon, Supabase, Railway, RDS). Managed providers
+require TLS, so append `?sslmode=require` to `DATABASE_URL`. The schema is applied
+automatically on deploy (see below); demo member accounts are created on demand at first
+guest login, so seeding is optional — run `npm run seed:prod` if you want them present up
+front.
 
 **Backend** — any Node host (Railway, Render, Fly.io):
 
 ```bash
-npm ci && npm run build && node dist/main
+npm ci && npm run build && npm run start:prod
 ```
+
+`start:prod` runs the pending migrations against `DATABASE_URL` and then boots the API.
+The migration and seed commands used in production (`migration:run:prod`, `seed:prod`)
+run from the compiled `dist/` output, so they work on a host that installs without dev
+dependencies — the plain `migration:run` / `seed` scripts rely on ts-node and are for
+local development only.
 
 Environment variables: `DATABASE_URL`, `JWT_SECRET` (a long random string),
 `PORT`, `CORS_ORIGIN` (the deployed frontend URL). Managed Postgres usually
