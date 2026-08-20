@@ -172,8 +172,9 @@ between targets.
 
 ![Data page](./images/10-data-page.png)
 
-Sidebar → **Data** aggregates everything by session. My captures appear as `2` for the
-count goal and `66.7% (66.7% Prompted)` for the accuracy goal. Other measurement types
+Sidebar → **Data** aggregates everything by session. Both of that morning's sessions are
+visible: my captures appear as `4` for the count goal and `66.7% (66.7% Prompted)` for the
+accuracy goal. Other measurement types
 render as key/value lists (`Answer Who: No Response, Answer What: No Response, +2 More`).
 **+ Log Data** allows entry outside a session.
 

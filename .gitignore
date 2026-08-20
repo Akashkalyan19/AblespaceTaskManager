@@ -6,10 +6,12 @@ frontend/.next/
 frontend/out/
 backend/dist/
 
-# Environment files (real secrets never committed)
-.env
-.env.local
-.env.*.local
+# Environment files (real secrets never committed) - allow only the examples
+.env*
+!.env.example
+
+# TypeScript incremental build info
+*.tsbuildinfo
 
 # Logs
 *.log

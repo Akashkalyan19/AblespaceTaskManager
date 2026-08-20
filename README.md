@@ -57,7 +57,8 @@ deployed app at the same time without seeing each other's changes.
   visible; the choice is remembered per view
 
 **Projects**
-- Projects table with priority, lead and due date, all editable in place
+- Projects table with priority, lead and due date editable without leaving the
+  table (lead inline, priority and due date from the row menu)
 - Project detail page showing that project's tasks, with a breadcrumb
 
 **Account & appearance**
@@ -69,7 +70,7 @@ deployed app at the same time without seeing each other's changes.
 **Everywhere**
 - Loading skeletons, error states with retry, empty states
 - Client and server side validation, confirmation dialogs for deletes
-- Responsive from 375px to 1440px+, keyboard accessible, WCAG AA contrast
+- Responsive from 375px to 1440px+, keyboard accessible; text colours meet WCAG AA in both themes
 
 ---
 
@@ -184,7 +185,8 @@ cd backend && npm run migration:run && npm run seed
 ```
 
 `migration:run` creates the tables; `seed` inserts the shared demo member
-accounts used as assignee options. Each guest's own projects and tasks are
+accounts used as assignee options (optional — `AuthService` creates any missing
+demo members at first guest login). Each guest's own projects and tasks are
 created automatically at login.
 
 ### 5. Start both apps
@@ -216,8 +218,8 @@ Open <http://localhost:3000> and click **Continue as Guest**.
 
 ## API
 
-All routes are prefixed with `/api`. Every route except guest login requires
-`Authorization: Bearer <token>`.
+All routes are prefixed with `/api`. Every route except guest login and the
+health check requires `Authorization: Bearer <token>`.
 
 ### Health
 | Method | Path | Description |
@@ -294,8 +296,10 @@ kind of token; nothing else has to change.
 
 - Tokens are CSS custom properties in `globals.css` (`--background`,
   `--foreground`, `--muted`, `--border`, `--primary`, …), exposed to Tailwind
-  through `@theme inline`. Components only ever use semantic classes such as
-  `bg-background` or `text-muted-foreground`, never raw hex values.
+  through `@theme inline`. Components use semantic classes such as
+  `bg-background` or `text-muted-foreground`; the only literal colours in the
+  codebase are the accent swatches, the generated avatars, the brand mark and
+  the Google logo, where a theme token would be the wrong answer.
 - **Light/dark** is a `dark` class on `<html>`.
 - **Accent colour** is a `data-accent` attribute on `<html>` that re-points
   `--primary` and `--ring`, so all six accents work in both modes.
@@ -339,7 +343,7 @@ the built UI was then measured against it. Reproduced:
   dropdown with the List/Board switch and field toggles, filter, Add Task
 - **Task detail** — title, description, Properties / Labels / Resources rows,
   subtasks table, comments, and the right-hand Details and Updates cards with
-  the priority dropdown and the date-range calendar
+  the priority dropdown and the start/end date pickers
 - **Projects** — table with Lead column, row menu with property submenus,
   project detail with the `Projects › name` breadcrumb
 - **Settings** — its own layout with "Back to app", search, Profile/Theme/Color
@@ -354,9 +358,10 @@ the built UI was then measured against it. Reproduced:
 | Avatars are generated initials, not photos | The Figma avatars are licensed stock images; initials on a per-user colour keep the repo self-contained |
 | Comments section is titled "Comments" | The mock labels this second section "Subtasks", which is clearly a copy/paste slip — it shows comments |
 | Projects page button reads "+ Add Project" | Two frames label it "+ Add Task"; one labels it "+ Add Project", which is the correct action |
-| "Fields" dropdown lists Teams instead of a second Members row | The mock lists "Members" twice; the duplicate is dropped |
+| "Fields" dropdown lists Status and Reporter in place of the duplicated row | The mock lists "Members" twice; the duplicate is dropped and the two remaining togglable fields take its place |
 | No email field on the login screen | The mock's sub-copy mentions email but the design has no input — guest login is the required flow |
 | Google button shows an explanatory toast | Real OAuth is out of scope for the assessment |
+| Some secondary controls are presentational and show an explanatory toast | The task lock, watcher count, Resources link, Details "add field"/settings and comment reactions appear in the mock but have no defined behaviour; they are rendered for fidelity and say so when clicked |
 | Mobile layouts are original | The Figma contains desktop frames only; small screens use stacked cards rather than shrunken tables |
 | Dark mode palette is original | Dark mode appears in the design only as a menu option, with no dark frames |
 | Some "On Hold" card titles were completed | They are cut off at the frame edge in the design |

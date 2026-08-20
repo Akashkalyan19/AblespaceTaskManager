@@ -10,6 +10,51 @@ import { TaskStatus } from '../src/common/enums';
  * .env, and clean up after themselves by deleting the guest accounts they
  * create (which cascades to their tasks, projects, comments and activity).
  */
+
+// supertest types `response.body` as `any`. These shapes cover just the fields
+// the assertions touch, so the tests stay type-safe and lint clean.
+interface UserBody {
+  id: string;
+  name: string;
+  title: string | null;
+  isGuest: boolean;
+  isDemoMember: boolean;
+}
+
+interface AuthBody {
+  accessToken: string;
+  user: UserBody;
+}
+
+interface TaskBody {
+  id: string;
+  title: string;
+  status: string;
+  priority: string;
+  labels: string[];
+  subtasks: TaskBody[];
+}
+
+interface ProjectBody {
+  id: string;
+  name: string;
+  priority: string;
+}
+
+interface CommentBody {
+  id: string;
+  body: string;
+}
+
+interface ActivityBody {
+  message: string;
+}
+
+/** Narrows a supertest response body to the shape the assertion expects. */
+function body<T>(response: request.Response): T {
+  return response.body as T;
+}
+
 describe('Task Management API (e2e)', () => {
   let app: INestApplication<App>;
   let token: string;
@@ -36,8 +81,9 @@ describe('Task Management API (e2e)', () => {
       .send({ name: 'E2E Tester' })
       .expect(201);
 
-    token = response.body.accessToken;
-    userId = response.body.user.id;
+    const created = body<AuthBody>(response);
+    token = created.accessToken;
+    userId = created.user.id;
   });
 
   afterAll(async () => {
@@ -66,8 +112,8 @@ describe('Task Management API (e2e)', () => {
         .set(auth())
         .expect(200);
 
-      expect(tasks.body.length).toBeGreaterThan(0);
-      expect(projects.body.length).toBe(3);
+      expect(body<TaskBody[]>(tasks).length).toBeGreaterThan(0);
+      expect(body<ProjectBody[]>(projects).length).toBe(3);
     });
 
     it('rejects an over-long name', () => {
@@ -107,10 +153,11 @@ describe('Task Management API (e2e)', () => {
         })
         .expect(201);
 
-      expect(response.body.title).toBe('E2E task');
-      expect(response.body.status).toBe('todo');
-      expect(response.body.labels).toEqual(['Testing']);
-      taskId = response.body.id;
+      const task = body<TaskBody>(response);
+      expect(task.title).toBe('E2E task');
+      expect(task.status).toBe('todo');
+      expect(task.labels).toEqual(['Testing']);
+      taskId = task.id;
     });
 
     it('reads the task back with its subtasks relation', async () => {
@@ -119,8 +166,9 @@ describe('Task Management API (e2e)', () => {
         .set(auth())
         .expect(200);
 
-      expect(response.body.id).toBe(taskId);
-      expect(Array.isArray(response.body.subtasks)).toBe(true);
+      const task = body<TaskBody>(response);
+      expect(task.id).toBe(taskId);
+      expect(Array.isArray(task.subtasks)).toBe(true);
     });
 
     it('filters tasks by search term', async () => {
@@ -129,8 +177,9 @@ describe('Task Management API (e2e)', () => {
         .set(auth())
         .expect(200);
 
-      expect(response.body).toHaveLength(1);
-      expect(response.body[0].id).toBe(taskId);
+      const tasks = body<TaskBody[]>(response);
+      expect(tasks).toHaveLength(1);
+      expect(tasks[0].id).toBe(taskId);
     });
 
     it('updates the task and records activity', async () => {
@@ -145,7 +194,7 @@ describe('Task Management API (e2e)', () => {
         .set(auth())
         .expect(200);
 
-      const messages = activity.body.map((a: { message: string }) => a.message);
+      const messages = body<ActivityBody[]>(activity).map((a) => a.message);
       expect(messages).toContain('changed status from To Do to Doing');
       expect(messages).toContain('changed priority from High to Urgent');
     });
@@ -162,8 +211,9 @@ describe('Task Management API (e2e)', () => {
         .set(auth())
         .expect(200);
 
-      expect(comments.body).toHaveLength(1);
-      expect(comments.body[0].body).toBe('A test comment');
+      const list = body<CommentBody[]>(comments);
+      expect(list).toHaveLength(1);
+      expect(list[0].body).toBe('A test comment');
     });
 
     it('creates a subtask under the task', async () => {
@@ -178,8 +228,9 @@ describe('Task Management API (e2e)', () => {
         .set(auth())
         .expect(200);
 
-      expect(detail.body.subtasks).toHaveLength(1);
-      expect(detail.body.subtasks[0].title).toBe('E2E subtask');
+      const task = body<TaskBody>(detail);
+      expect(task.subtasks).toHaveLength(1);
+      expect(task.subtasks[0].title).toBe('E2E subtask');
     });
 
     it('does not list subtasks as top-level tasks', async () => {
@@ -188,8 +239,9 @@ describe('Task Management API (e2e)', () => {
         .set(auth())
         .expect(200);
 
-      expect(response.body).toHaveLength(1);
-      expect(response.body[0].title).toBe('E2E task');
+      const tasks = body<TaskBody[]>(response);
+      expect(tasks).toHaveLength(1);
+      expect(tasks[0].title).toBe('E2E task');
     });
 
     it('deletes the task', async () => {
@@ -246,12 +298,12 @@ describe('Task Management API (e2e)', () => {
   });
 
   describe('sandbox isolation', () => {
-    it('hides one guest\'s tasks from another', async () => {
+    it("hides one guest's tasks from another", async () => {
       const other = await request(app.getHttpServer())
         .post('/api/auth/guest')
         .send({})
         .expect(201);
-      const otherToken: string = other.body.accessToken;
+      const otherToken = body<AuthBody>(other).accessToken;
 
       const created = await request(app.getHttpServer())
         .post('/api/tasks')
@@ -260,7 +312,7 @@ describe('Task Management API (e2e)', () => {
         .expect(201);
 
       await request(app.getHttpServer())
-        .get(`/api/tasks/${created.body.id}`)
+        .get(`/api/tasks/${body<TaskBody>(created).id}`)
         .set('Authorization', `Bearer ${otherToken}`)
         .expect(404);
 
@@ -281,8 +333,9 @@ describe('Task Management API (e2e)', () => {
         .send({ name: 'E2E project', priority: 'medium' })
         .expect(201);
 
-      expect(response.body.name).toBe('E2E project');
-      projectId = response.body.id;
+      const project = body<ProjectBody>(response);
+      expect(project.name).toBe('E2E project');
+      projectId = project.id;
     });
 
     it('updates the project', async () => {
@@ -292,7 +345,7 @@ describe('Task Management API (e2e)', () => {
         .send({ priority: 'urgent' })
         .expect(200);
 
-      expect(response.body.priority).toBe('urgent');
+      expect(body<ProjectBody>(response).priority).toBe('urgent');
     });
 
     it('scopes tasks to a project', async () => {
@@ -307,8 +360,9 @@ describe('Task Management API (e2e)', () => {
         .set(auth())
         .expect(200);
 
-      expect(response.body).toHaveLength(1);
-      expect(response.body[0].title).toBe('Scoped task');
+      const tasks = body<TaskBody[]>(response);
+      expect(tasks).toHaveLength(1);
+      expect(tasks[0].title).toBe('Scoped task');
     });
 
     it('deletes the project and cascades to its tasks', async () => {
@@ -322,7 +376,7 @@ describe('Task Management API (e2e)', () => {
         .set(auth())
         .expect(200);
 
-      expect(response.body).toHaveLength(0);
+      expect(body<TaskBody[]>(response)).toHaveLength(0);
     });
   });
 
@@ -333,8 +387,9 @@ describe('Task Management API (e2e)', () => {
         .set(auth())
         .expect(200);
 
-      expect(response.body.id).toBe(userId);
-      expect(response.body.isGuest).toBe(true);
+      const user = body<UserBody>(response);
+      expect(user.id).toBe(userId);
+      expect(user.isGuest).toBe(true);
     });
 
     it('updates the profile', async () => {
@@ -344,8 +399,9 @@ describe('Task Management API (e2e)', () => {
         .send({ name: 'Renamed Tester', title: 'QA' })
         .expect(200);
 
-      expect(response.body.name).toBe('Renamed Tester');
-      expect(response.body.title).toBe('QA');
+      const user = body<UserBody>(response);
+      expect(user.name).toBe('Renamed Tester');
+      expect(user.title).toBe('QA');
     });
 
     it('rejects a username containing spaces', () => {
@@ -362,8 +418,9 @@ describe('Task Management API (e2e)', () => {
         .set(auth())
         .expect(200);
 
-      expect(response.body.length).toBeGreaterThan(0);
-      expect(response.body[0].isDemoMember).toBe(true);
+      const members = body<UserBody[]>(response);
+      expect(members.length).toBeGreaterThan(0);
+      expect(members[0].isDemoMember).toBe(true);
     });
   });
 });

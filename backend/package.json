@@ -1,10 +1,10 @@
 {
-  "name": "backend",
+  "name": "taskms-backend",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "NestJS API for the Pyramid task management system",
+  "author": "Akash Kalyan",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -12,11 +12,10 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "npm run migration:run:prod && node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./test/jest-e2e.json",
+    "test:watch": "jest --config ./test/jest-e2e.json --watch",
+    "test:cov": "jest --config ./test/jest-e2e.json --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "typeorm-ts-node-commonjs -d src/database/data-source.ts",
     "migration:run": "npm run typeorm -- migration:run",
@@ -25,7 +24,8 @@
     "seed": "ts-node src/database/seeds/run-seed.ts",
     "typeorm:prod": "typeorm -d dist/database/data-source.js",
     "migration:run:prod": "npm run typeorm:prod -- migration:run",
-    "seed:prod": "node dist/database/seeds/run-seed.js"
+    "seed:prod": "node dist/database/seeds/run-seed.js",
+    "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

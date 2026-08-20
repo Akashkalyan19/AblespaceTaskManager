@@ -52,11 +52,16 @@
   --priority-high: #dc2626;
   --priority-medium: #c2410c;
   --priority-low: #71717a;
-  --status-backlog: #f97316;
+  /*
+   * Status colors are rendered as text (StatusBadge), so they are darkened
+   * from the mock's lighter tints to clear WCAG AA on white. The mock's
+   * values measured 2.8-4.2:1; these measure 4.8-7.1:1 with the same hues.
+   */
+  --status-backlog: #c2410c;
   --status-todo: #71717a;
-  --status-doing: #3b82f6;
-  --status-completed: #16a34a;
-  --status-on-hold: #8b5cf6;
+  --status-doing: #1d4ed8;
+  --status-completed: #15803d;
+  --status-on-hold: #6d28d9;
 }
 
 .dark {
